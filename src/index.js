@@ -44,7 +44,8 @@ app.get("/getAll", async (req, res) => {
 });
 
 app.patch("/update/:id", async (req, res) => {
-    const { id } = parseInt(req.params.id);
+    const id = parseInt(req.params.id);
+    // console.log(id);
     const { task, completed } = req.body;
 
     if (!task && !completed) {
@@ -65,11 +66,12 @@ app.patch("/update/:id", async (req, res) => {
         }
 
         if (task && !completed) {
+            console.log("aya");
             const updateTodo = await prisma.todos.update({
                 where: {
                     id,
                 },
-                todo: { task },
+                data: { task },
             });
             return res.status(200).json({
                 message: "Todo is updated",
@@ -78,11 +80,12 @@ app.patch("/update/:id", async (req, res) => {
         }
 
         if (completed && !task) {
+            console.log("aya");
             const updateTodo = await prisma.todos.update({
                 where: {
                     id,
                 },
-                todo: { completed },
+                data: { completed },
             });
             return res.status(200).json({
                 message: "Todo is updated",
@@ -91,11 +94,12 @@ app.patch("/update/:id", async (req, res) => {
         }
 
         if (task && completed) {
+            console.log("aya");
             const updateTodo = await prisma.todos.update({
                 where: {
                     id,
                 },
-                todo: { task, completed },
+                data: { task, completed },
             });
             return res.status(200).json({
                 message: "Todo is updated",
