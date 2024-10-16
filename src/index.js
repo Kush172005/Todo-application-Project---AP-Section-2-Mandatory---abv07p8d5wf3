@@ -52,21 +52,56 @@ app.patch("/update/:id", async (req, res) => {
             .status(400)
             .json({ message: "No fields provided to update" });
     }
+
     try {
-        const updateTodo = await prisma.todos.update({
+        const findTodo = await prisma.todos.findUnique({
             where: {
                 id,
             },
-            todo: { task, completed },
         });
 
-        if (!updateTodo) {
+        if (!findTodo) {
             return res.status(404).json({ message: "Todo not found" });
         }
-        return res.status(200).json({
-            message: "Todo is updated",
-            todo: updateTodo,
-        });
+
+        if (task && !completed) {
+            const updateTodo = await prisma.todos.update({
+                where: {
+                    id,
+                },
+                todo: { task },
+            });
+            return res.status(200).json({
+                message: "Todo is updated",
+                todo: updateTodo,
+            });
+        }
+
+        if (completed && !task) {
+            const updateTodo = await prisma.todos.update({
+                where: {
+                    id,
+                },
+                todo: { completed },
+            });
+            return res.status(200).json({
+                message: "Todo is updated",
+                todo: updateTodo,
+            });
+        }
+
+        if (task && completed) {
+            const updateTodo = await prisma.todos.update({
+                where: {
+                    id,
+                },
+                todo: { task, completed },
+            });
+            return res.status(200).json({
+                message: "Todo is updated",
+                todo: updateTodo,
+            });
+        }
     } catch (error) {
         console.log(error);
         return res.status({ error });
